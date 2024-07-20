@@ -15,7 +15,7 @@ export class TelegramService {
     static sendMessage(message: string, chatId: string) {
         return axios
             .get<{ ok: boolean }>(
-                `https://api.telegram.org/bot${ENV.TELEGRAM_BOT_API_KEY}/sendMessage?chat_id=${chatId}&text=${message}`
+                `https://api.telegram.org/bot${ENV.TELEGRAM_BOT_API_KEY}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=html`
             )
     }
 }

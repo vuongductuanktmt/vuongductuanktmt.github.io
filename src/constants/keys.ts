@@ -1,3 +1,4 @@
 export enum KEYS {
     SCAN_HISTORIES = "SCAN_HISTORIES",
+    USER_PROFILE = "USER_PROFILE",
 }

@@ -2,12 +2,16 @@ import {
   ClearOutlined,
   CustomerServiceOutlined,
   GithubOutlined,
+  LogoutOutlined,
   MenuOutlined,
 } from "@ant-design/icons";
 import { centerText, Scanner } from "@yudiel/react-qr-scanner";
 import { useLocalStorageState, useToggle } from "ahooks";
 import { FloatButton } from "antd";
+import { User } from "firebase/auth";
 import moment from "moment";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import Empty from "~/components/Empty";
 import { ENV, KEYS } from "~/constants";
 import TickIcon from "~/icons/TickIcon";
@@ -20,9 +24,19 @@ export default function QRCodePage() {
     defaultValue: [],
   });
 
+  const [userProfile, setUserProfile] = useLocalStorageState<User>(
+    KEYS.USER_PROFILE
+  );
+
+  const navigate = useNavigate();
+
   const [openMenu, { toggle: toggleMenu }] = useToggle(false);
   const clearHistory = () => {
     setScanHistories([]);
+  };
+  const handleLogout = () => {
+    setUserProfile(undefined);
+    navigate("/login");
   };
   const getSupport = () => {
     window.open(ENV.SUPPORT_FORM_URL);
@@ -30,6 +44,13 @@ export default function QRCodePage() {
   const getGithub = () => {
     window.open(ENV.GITHUB_REPO_URL);
   };
+
+  useEffect(() => {
+    if (!userProfile) {
+      navigate("/login");
+    }
+  }, [userProfile]);
+
   return (
     <>
       <div className="flex flex-col justify-center align-baseline h-screen">
@@ -42,7 +63,9 @@ export default function QRCodePage() {
               if (item.format === "qr_code") {
                 const createdAt = moment().format("DD/MM/YYYY HH:mm:ss");
                 TelegramService.sendMessage(
-                  `ĐÃ QUÉT ĐƠN HÀNG: "${item.rawValue}" vào lúc ${createdAt}`,
+                  `<strong>📣 CandyQueen PetShop 📣</strong>\n<strong>[${userProfile?.displayName?.toLocaleUpperCase()}]</strong> Đã Quét Đơn Hàng <i>⭐${
+                    item.rawValue
+                  }⭐</i>\n⏱️ Vào lúc ${createdAt}`,
                   "-4225095637"
                 ).then(({ data }) => {
                   if (data.ok) {
@@ -111,6 +134,10 @@ export default function QRCodePage() {
           />
           <FloatButton icon={<GithubOutlined />} onClick={getGithub} />
           <FloatButton icon={<ClearOutlined />} onClick={clearHistory} />
+          <FloatButton
+            icon={<LogoutOutlined style={{ color: "red" }} />}
+            onClick={handleLogout}
+          />
         </FloatButton.Group>
       </>
     </>
