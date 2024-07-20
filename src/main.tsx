@@ -5,10 +5,10 @@ import { ConfigProvider } from "antd";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createHashRouter } from "react-router-dom";
 import Login from "./pages/Login";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/login",
     element: <Login />,

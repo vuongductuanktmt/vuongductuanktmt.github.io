@@ -19,6 +19,7 @@ export default function LoginPage() {
 
   const handleLoginGoogle = () => {
     signInWithGoogle().then((data) => {
+      navigate("/");
       setUserProfile(data);
     });
   };
