@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@material-tailwind/react";
 import Home from "@pages/Home.tsx";
 import { setupStore } from "@store/store.ts";
 import "@styles/index.css";
@@ -23,18 +24,20 @@ const store = setupStore();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: "#8665D3",
-          borderRadius: 2,
-          colorBgContainer: "#f6ffed",
-        },
-      }}
-    >
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    </ConfigProvider>
+    <ThemeProvider>
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: "#8665D3",
+            borderRadius: 2,
+            colorBgContainer: "#f6ffed",
+          },
+        }}
+      >
+        <Provider store={store}>
+          <RouterProvider router={router} />
+        </Provider>
+      </ConfigProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );

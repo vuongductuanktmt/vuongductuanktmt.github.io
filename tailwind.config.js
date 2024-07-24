@@ -1,6 +1,6 @@
+import withMT from '@material-tailwind/react/utils/withMT';
 import defaultTheme from 'tailwindcss/defaultTheme';
-
-export default {
+export default withMT({
 	content: ['./src/**/*.{js,jsx,ts,tsx}'],
 	theme: {
 		extend: {
@@ -63,4 +63,4 @@ export default {
 		},
 	},
 	plugins: [],
-};
+})

@@ -6,11 +6,10 @@ import {
   MenuOutlined,
 } from "@ant-design/icons";
 import { centerText, Scanner } from "@yudiel/react-qr-scanner";
-import { useLocalStorageState, useToggle } from "ahooks";
-import { FloatButton } from "antd";
+import { useDebounceEffect, useLocalStorageState, useToggle } from "ahooks";
+import { FloatButton, message } from "antd";
 import { User } from "firebase/auth";
 import moment from "moment";
-import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import Empty from "~/components/Empty";
 import { ENV, KEYS } from "~/constants";
@@ -25,8 +24,21 @@ export default function QRCodePage() {
   });
 
   const [userProfile, setUserProfile] = useLocalStorageState<User>(
-    KEYS.USER_PROFILE
+    KEYS.USER_PROFILE,
+    {
+      listenStorageChange: true,
+    }
   );
+
+  const [, setNotifyType] = useLocalStorageState<"public" | "private">(
+    KEYS.NOTIFY_TYPE,
+    { listenStorageChange: true, defaultValue: "public" }
+  );
+
+  const [shopName, setShopName] = useLocalStorageState<string>(KEYS.SHOP_NAME, {
+    listenStorageChange: true,
+    defaultValue: "",
+  });
 
   const navigate = useNavigate();
 
@@ -36,6 +48,8 @@ export default function QRCodePage() {
   };
   const handleLogout = () => {
     setUserProfile(undefined);
+    setShopName("");
+    setNotifyType("public");
     navigate("/login");
   };
   const getSupport = () => {
@@ -45,17 +59,23 @@ export default function QRCodePage() {
     window.open(ENV.GITHUB_REPO_URL);
   };
 
-  useEffect(() => {
-    if (!userProfile) {
-      navigate("/login");
-    }
-  }, [userProfile]);
+  useDebounceEffect(
+    () => {
+      if (!userProfile) {
+        navigate("/login");
+      } else {
+        message.info(`Xin chào "${userProfile.displayName}"`, 1.5);
+      }
+    },
+    [userProfile],
+    { wait: 1000 }
+  );
 
   return (
     <>
       <div className="flex flex-col justify-center align-baseline h-screen">
         <h1 className="text-center absolute top-[20px] w-full animate-text bg-gradient-to-r from-teal-500 via-purple-500 to-orange-500 bg-clip-text text-transparent font-black z-10">
-          CandyQueen Report
+          {shopName}
         </h1>
         <Scanner
           onScan={(result) => {
@@ -63,7 +83,7 @@ export default function QRCodePage() {
               if (item.format === "qr_code") {
                 const createdAt = moment().format("DD/MM/YYYY HH:mm:ss");
                 TelegramService.sendMessage(
-                  `<strong>📣 CandyQueen PetShop 📣</strong>\n<strong>[${userProfile?.displayName?.toLocaleUpperCase()}]</strong> Đã Quét Đơn Hàng <i>⭐${
+                  `<strong>📣 ${shopName} 📣</strong>\n<strong>[${userProfile?.displayName?.toLocaleUpperCase()}]</strong> Đã Quét Đơn Hàng <i>⭐${
                     item.rawValue
                   }⭐</i>\n⏱️ Vào lúc ${createdAt}`,
                   "-4225095637"
