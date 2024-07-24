@@ -40,7 +40,7 @@ export default function LoginPage() {
       setUserProfile(data);
     });
   };
-  const handleLoginGitHub = () => {
+  const handleLoginFacebook = () => {
     message.warning("Not implemented yet");
   };
   const handleLogout = () => {
@@ -106,18 +106,20 @@ export default function LoginPage() {
           </>
         ) : (
           <div>
-            <p className="text-2xl font-bold dark:text-white">
+            <p className="text-2xl font-bold dark:text-white text-center">
               Đăng nhập để tiếp tục
             </p>
-            <p className="dark:text-gray-200">
-              Sử dụng thông tin đăng nhập để biết ai là người quét đơn
+            <p className="dark:text-gray-200 text-center">
+              Thông tin đăng nhập xác thực người quét đơn
             </p>
             <div className="mt-4">
-              <a href="#" className="block">
-                <button
-                  className="w-full text-center py-2 my-3 border flex items-center justify-center border-slate-200 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150"
-                  onClick={handleLoginGoogle}
-                >
+              <Button
+                fullWidth
+                variant="outlined"
+                className="rounded-full"
+                onClick={handleLoginGoogle}
+              >
+                <div className="flex items-center justify-center">
                   <img
                     src="https://www.svgrepo.com/show/355037/google.svg"
                     className="w-5 h-5 mr-2"
@@ -126,13 +128,16 @@ export default function LoginPage() {
                   <span className="dark:text-gray-300">
                     Đăng nhập với Google
                   </span>
-                </button>
-              </a>
-              <a href="#" className="block">
-                <button
-                  className="w-full text-center py-2 my-3 border flex items-center justify-center border-slate-200 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150"
-                  onClick={handleLoginGitHub}
-                >
+                </div>
+              </Button>
+
+              <Button
+                fullWidth
+                variant="outlined"
+                className="rounded-full mt-2"
+                onClick={handleLoginFacebook}
+              >
+                <div className="flex items-center justify-center">
                   <img
                     src="https://www.svgrepo.com/show/349359/facebook.svg"
                     className="w-5 h-5 mr-2"
@@ -141,8 +146,8 @@ export default function LoginPage() {
                   <span className="dark:text-gray-300">
                     Đăng nhập với Facebook
                   </span>
-                </button>
-              </a>
+                </div>
+              </Button>
             </div>
           </div>
         )}

@@ -28,6 +28,11 @@
   --color-primary-900: rgb(var(--tw-color-primary-900)); /* #0c4a6e */
   /* #endregion  /**======== Primary Color =========== */
 }
+body {
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+}
 
 @layer base {
   /* inter var - latin */
