@@ -10,6 +10,7 @@ import { useDebounceEffect, useLocalStorageState, useToggle } from "ahooks";
 import { FloatButton, message } from "antd";
 import { User } from "firebase/auth";
 import moment from "moment";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import Empty from "~/components/Empty";
 import { ENV, KEYS } from "~/constants";
@@ -34,6 +35,8 @@ export default function QRCodePage() {
     KEYS.NOTIFY_TYPE,
     { listenStorageChange: true, defaultValue: "public" }
   );
+
+  const [isNewQRCode, setisNewQRCode] = useState(false);
 
   const [shopName, setShopName] = useLocalStorageState<string>(KEYS.SHOP_NAME, {
     listenStorageChange: true,
@@ -68,13 +71,15 @@ export default function QRCodePage() {
       }
     },
     [userProfile],
-    { wait: 1000 }
+    { wait: 1000, leading: true }
   );
+
+  if (!userProfile) return null;
 
   return (
     <>
       <div className="flex flex-col justify-center align-baseline h-screen">
-        <h1 className="text-center absolute top-[20px] w-full animate-text bg-gradient-to-r from-teal-500 via-purple-500 to-orange-500 bg-clip-text text-transparent font-black z-10">
+        <h1 className="text-center fixed top-[20px] w-full animate-text bg-gradient-to-r from-teal-500 via-purple-500 to-orange-500 bg-clip-text text-transparent font-black z-10">
           {shopName}
         </h1>
         <Scanner
@@ -89,6 +94,7 @@ export default function QRCodePage() {
                   "-4225095637"
                 ).then(({ data }) => {
                   if (data.ok) {
+                    setisNewQRCode(true);
                     setScanHistories((codes) => [
                       {
                         code: item.rawValue,
@@ -96,6 +102,7 @@ export default function QRCodePage() {
                       },
                       ...(codes ?? []),
                     ]);
+                    setTimeout(() => setisNewQRCode(false), 2000);
                   }
                 });
               }
@@ -123,7 +130,9 @@ export default function QRCodePage() {
               {scanHistories?.map((item, index) => (
                 <li
                   className={`flex items-center ${
-                    index === 0 ? "font-bold text-green-500" : ""
+                    index === 0
+                      ? `${isNewQRCode ? "font-bold text-green-500" : ""}`
+                      : ""
                   }`}
                   key={index}
                 >
